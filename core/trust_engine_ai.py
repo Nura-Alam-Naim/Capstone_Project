@@ -109,11 +109,9 @@ class MultiDimensionalTrustEngine:
 
         return np.clip(scores, 0.0, 1.0)
 
-    def _sigmoid_score(self, values: np.ndarray, invert: bool = False) -> np.ndarray:
+    def _sigmoid_score(self, values: np.ndarray) -> np.ndarray:
         values = np.asarray(values, dtype=float)
         z = (values - values.mean()) / (values.std() + 1e-8)
-        if invert:
-            z = -z
         return 1.0 / (1.0 + np.exp(-z))
 
     def _bounded_distance_score(self, values: np.ndarray) -> np.ndarray:

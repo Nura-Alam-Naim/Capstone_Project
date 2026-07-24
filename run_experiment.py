@@ -34,7 +34,7 @@ logger = get_logger("AdaptiveHTFL")
 
 CONFIG = {
     "n_clients":        10,
-    "n_rounds":         25,
+    "n_rounds":         50,
     "n_features":       10,
     "n_classes":        10,
     "local_epochs":     5,

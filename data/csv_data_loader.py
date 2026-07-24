@@ -124,7 +124,7 @@ def load_csv_hardware_context(
     return contexts
 
 
-def get_csv_dataset_info(data_dir: str = None) -> Dict:
+def get_csv_dataset_info() -> Dict:
     """Return dataset metadata matching get_dataset_info() format."""
     return {
         "name": "MATLAB-Generated Smart Campus IoT Sensor Data (CSV)",

@@ -77,10 +77,8 @@ class AdaptiveHTFLServer:
         else:
             self.dpot = None
 
-        self.global_accuracy_history: List[float] = []
         self.trust_score_history: List[np.ndarray] = []
         self.dpot_log: List[Dict] = []
-        self.compression_log: List[float] = []
 
     def get_global_weights(self) -> Dict:
         return self.global_model.get_weights()
@@ -113,7 +111,6 @@ class AdaptiveHTFLServer:
 
         hardware_contexts = [m.get("hardware_context", {}) for m in client_metas]
         avg_compression = float(np.mean([m.get("compression_ratio", 0.0) for m in client_metas]))
-        self.compression_log.append(avg_compression)
 
         if self.strategy == "fedavg":
             n_arr = np.array(n_samples, dtype=float)
@@ -214,16 +211,4 @@ class AdaptiveHTFLServer:
         return log
 
     def evaluate(self, X_test: np.ndarray, y_test: np.ndarray) -> float:
-        acc = self.global_model.accuracy(X_test, y_test)
-        self.global_accuracy_history.append(acc)
-        return acc
-
-    def get_dpot_stats(self) -> Dict:
-        if not self.dpot:
-            return {}
-        return {
-            "chain_length": len(self.dpot.chain),
-            "consensus_rate": self.dpot.consensus_rate(),
-            "avg_committee_size": self.dpot.average_committee_size(),
-            "chain_integrity": self.dpot.verify_chain_integrity(),
-        }
+        return self.global_model.accuracy(X_test, y_test)
