@@ -166,7 +166,7 @@ class AdaptiveHTFLServer:
                 update_norms.append(float(np.linalg.norm(delta)))
 
             median_norm = float(np.median(update_norms))
-            clip_threshold = median_norm * 0.8
+            clip_threshold = median_norm * 1.0
 
             clipped_weights = []
             for i, w in enumerate(client_weights):

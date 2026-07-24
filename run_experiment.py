@@ -149,8 +149,8 @@ def run_single_experiment(scenario, strategy_label, config, partitions,
         # reduced malicious client contributions in aggregation.
         if server.strategy == "adaptive_htfl":
             for client in clients:
-                client.local_epochs = 18
-                client.model.lr = 0.12
+                client.local_epochs = 15
+                client.model.lr = 0.10
 
         for client in clients:
             w, n, loss, meta = client.local_train(enable_compression=enable_comp)
