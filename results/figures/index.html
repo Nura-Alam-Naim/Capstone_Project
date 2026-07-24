@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Adaptive-HTFL Dashboard</title>
+  <style>body{font-family:Arial, sans-serif; margin:20px; color:#222;} h1,h2{text-align:center;} img{max-width:100%; height:auto; margin-bottom:1.5rem; border:1px solid #ccc;} pre{white-space:pre-wrap; word-wrap:break-word; background:#f9f9f9; border:1px solid #ddd; padding:12px;}</style>
+</head>
+<body>
+<h1>Adaptive-HTFL Dashboard</h1>
+<h2>Summary Table</h2>
+<pre>===============================================================================================
+Scenario                  FedAvg  BasicTrust      HTFL Diff vs FedAvg   Compress
+===============================================================================================
+Baseline                  0.7416      0.7078    0.8667      +0.1251      7.8%
+Label Flip (30%)          0.8084      0.7200    0.8464      +0.0380      5.7%
+Noise Inject. (30%)       0.7398      0.7038    0.7500      +0.0102      6.3%
+Scaling (20%)             0.3044      0.7133    0.7693      +0.4649      6.9%
+Slow Poison (40%)         0.7231      0.5989    0.7816      +0.0584      4.9%
+===============================================================================================</pre>
+<h2>Figures</h2>
+<img src="fig1_convergence.png" alt="Accuracy Convergence">
+<img src="fig2_accuracy_bar.png" alt="Final Accuracy Bar">
+<img src="fig3_trust_heatmap.png" alt="Trust Heatmap">
+<img src="fig4_radar.png" alt="Robustness Radar">
+<img src="fig5_dpot_compression.png" alt="DPoT Compression">
+</body>
+</html>
