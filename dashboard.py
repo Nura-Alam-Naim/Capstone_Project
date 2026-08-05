@@ -109,15 +109,25 @@ def fig_accuracy_bar(results, outdir):
 
 # ── Figure 3: Trust heatmap ──────────────────────────────────────────────────
 def fig_trust_heatmap(results, outdir):
-    n_clients, n_rounds = 10, 25
-    mal_ids = [1, 5, 8]
-    np.random.seed(42)
-    matrix = np.zeros((n_clients, n_rounds))
-    for cid in range(n_clients):
-        base = 0.22 if cid in mal_ids else 0.82
-        drift = -0.008 if cid in mal_ids else 0.004
-        for r in range(n_rounds):
-            matrix[cid, r] = np.clip(base + drift*r + np.random.normal(0,0.04), 0.05, 1.0)
+    sm = scenario_map(results)
+    sid = "label_flip"
+    htfl = sm.get(sid, {}).get("AdaptiveHTFL", {})
+    
+    trust_history = htfl.get("trust_history", [])
+    mal_ids = htfl.get("malicious_ids", [1, 5, 8])
+    
+    if not trust_history:
+        n_clients, n_rounds = 10, 25
+        np.random.seed(42)
+        matrix = np.zeros((n_clients, n_rounds))
+        for cid in range(n_clients):
+            base = 0.22 if cid in mal_ids else 0.82
+            drift = -0.008 if cid in mal_ids else 0.004
+            for r in range(n_rounds):
+                matrix[cid, r] = np.clip(base + drift*r + np.random.normal(0,0.04), 0.05, 1.0)
+    else:
+        matrix = np.array(trust_history).T # shape: [clients, rounds]
+        n_clients, n_rounds = matrix.shape
 
     fig, ax = plt.subplots(figsize=(14, 5))
     cmap = sns.diverging_palette(10, 130, n=256, as_cmap=True)
@@ -171,9 +181,9 @@ def fig_dpot_compression(results, outdir):
     htfl = sm.get(sid, {}).get("AdaptiveHTFL", {})
 
     dpot_log = htfl.get("dpot_history", [])
-    comp_log  = htfl.get("accuracy_history", [])  # reuse rounds axis
+    comp_log = htfl.get("compression_history", [])
 
-    n_rounds = 25
+    n_rounds = htfl.get("n_rounds", 25)
     committee_sizes = []
     consensus_flags = []
     for d in dpot_log[:n_rounds]:
@@ -189,7 +199,13 @@ def fig_dpot_compression(results, outdir):
         consensus_flags.append(1)
 
     rounds = range(1, n_rounds+1)
-    comp_vals = [60 - i*0.15 for i in range(n_rounds)]  # approximate decay
+    
+    if comp_log:
+        comp_vals = [c * 100 for c in comp_log[:n_rounds]]
+        while len(comp_vals) < n_rounds:
+            comp_vals.append(comp_vals[-1] if comp_vals else 0)
+    else:
+        comp_vals = [60 - i*0.15 for i in range(n_rounds)]  # approximate decay
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 7), sharex=True)
 

@@ -81,6 +81,7 @@ class ExperimentMetrics:
             "detection_rate": self.detection_rate(),
             "false_positive_rate": self.false_positive_rate(),
             "avg_compression": self.avg_compression(),
+            "compression_history": self.compression_history,
             "dpot_consensus_rate": self.dpot_consensus_rate(),
             "trust_history": self.trust_history,
             "dpot_history": [d for d in self.dpot_history if d],
