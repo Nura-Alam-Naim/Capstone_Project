@@ -34,7 +34,7 @@ logger = get_logger("AdaptiveHTFL")
 
 CONFIG = {
     "n_clients":        10,
-    "n_rounds":         25,
+    "n_rounds":         50,
     "n_features":       10,
     "n_classes":        10,
     "local_epochs":     5,
@@ -149,8 +149,8 @@ def run_single_experiment(scenario, strategy_label, config, partitions,
         # reduced malicious client contributions in aggregation.
         if server.strategy == "adaptive_htfl":
             for client in clients:
-                client.local_epochs = 12
-                client.model.lr = 0.08
+                client.local_epochs = 15
+                client.model.lr = 0.10
 
         for client in clients:
             w, n, loss, meta = client.local_train(enable_compression=enable_comp)

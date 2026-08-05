@@ -26,7 +26,7 @@ import hashlib
 import json
 import time
 from typing import List, Dict, Optional, Tuple
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -130,7 +130,6 @@ class DPoTChain:
     def __init__(self, contract: Optional[SmartContract] = None):
         self.contract = contract or SmartContract()
         self.chain: List[DPoTBlock] = []
-        self.pending_model: Optional[Dict] = None
 
     def fingerprint_weights(self, weights: Dict[str, np.ndarray]) -> str:
         """Compute a short fingerprint of the aggregated model weights."""
@@ -175,30 +174,12 @@ class DPoTChain:
         self.chain.append(block)
         return block
 
-    def get_chain_summary(self) -> List[Dict]:
-        return [
-            {
-                "round": b.round_num,
-                "committee_size": len(b.committee),
-                "excluded": len(b.excluded),
-                "threshold": b.dynamic_threshold,
-                "votes": b.consensus_votes,
-                "consensus": b.consensus_reached,
-                "fingerprint": b.model_fingerprint,
-                "hash": b.block_hash,
-            }
-            for b in self.chain
-        ]
-
     def verify_chain_integrity(self) -> bool:
         """Verify that all block hashes are correct (tamper detection)."""
         for block in self.chain:
             if block.block_hash != block.compute_hash():
                 return False
         return True
-
-    def latest_block(self) -> Optional[DPoTBlock]:
-        return self.chain[-1] if self.chain else None
 
     def consensus_rate(self) -> float:
         if not self.chain:

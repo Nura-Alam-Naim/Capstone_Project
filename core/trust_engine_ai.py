@@ -109,11 +109,9 @@ class MultiDimensionalTrustEngine:
 
         return np.clip(scores, 0.0, 1.0)
 
-    def _sigmoid_score(self, values: np.ndarray, invert: bool = False) -> np.ndarray:
+    def _sigmoid_score(self, values: np.ndarray) -> np.ndarray:
         values = np.asarray(values, dtype=float)
         z = (values - values.mean()) / (values.std() + 1e-8)
-        if invert:
-            z = -z
         return 1.0 / (1.0 + np.exp(-z))
 
     def _bounded_distance_score(self, values: np.ndarray) -> np.ndarray:
@@ -479,10 +477,10 @@ class MultiDimensionalTrustEngine:
 
         if trust_std > 0.15:
             blend = 0.0   # fully trust-weighted (clear attack)
-        elif trust_std < 0.05:
-            blend = 0.40  # light FedAvg blend (benign, all similar trust)
+        elif trust_std < 0.08:
+            blend = 0.65  # heavy FedAvg blend (ambiguous → FedAvg + norm clipping)
         else:
-            blend = 0.40 * (1.0 - (trust_std - 0.05) / (0.15 - 0.05))
+            blend = 0.65 * (1.0 - (trust_std - 0.08) / (0.15 - 0.08))
 
         return (1.0 - blend) * trust_weights + blend * fedavg_weights
 

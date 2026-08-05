@@ -112,9 +112,6 @@ class IoTClient:
         self.is_malicious = attack_type is not None
         self.n_samples = len(X_train)
 
-        # Track updates + compression stats
-        self.update_history = []
-        self.compression_history = []   # sparsification ratios used
         self.current_trust_score = 1.0  # updated by server each round
 
     def receive_global_model(self, global_weights: Dict):
@@ -157,8 +154,7 @@ class IoTClient:
             
         update = self._sparsify(update, compression_ratio)
 
-        self.update_history.append(update.copy())
-        self.compression_history.append(compression_ratio)
+
 
         # Reconstruct weights from sparsified update
         sparsified_flat = pre_flat + update
@@ -221,11 +217,7 @@ class IoTClient:
             update *= self.attack_params.get("scale_factor", 10.0)
         return update
 
-    def evaluate(self, X_test, y_test):
-        return self.model.accuracy(X_test, y_test)
 
-    def get_recent_update(self):
-        return self.update_history[-1] if self.update_history else None
 
     def __repr__(self):
         tag = f"[{self.attack_type.upper()}]" if self.is_malicious else "[HONEST]"
